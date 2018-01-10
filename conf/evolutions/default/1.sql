@@ -19,8 +19,12 @@ CREATE TABLE `User` (
   DEFAULT CHARSET = utf8;
 
 
-INSERT INTO `User` (`username`, `email`, `password`, `salt`) VALUES
-  ('admin', 'igor@coder.io', '$2y$10$f5watXLN6fF.caKu2i1yuergTWASZZhRmW.kf14m1PI6zD1FVElFq', 'Rm1NPZ5cxlIIRLvnbyuM');
+INSERT INTO `User` (`user_id`, `first_name`, `last_name`, `username`, `email`, `password`, `salt`, `birth`, `gender`, `country_id`) VALUES
+  (
+    1, 'Admin', 'Admin', 'admin', 'igor@coder.io', '$2y$10$f5watXLN6fF.caKu2i1yuergTWASZZhRmW.kf14m1PI6zD1FVElFq',
+    'Rm1NPZ5cxlIIRLvnbyuM', '2018-01-01', 'M', 54
+  );
+
 
 # --- !Downs
 

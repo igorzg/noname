@@ -3,7 +3,10 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import models.dao.UserDao
-import play.api.libs.json.Json
+import models.entity.User
+import org.json4s.{Formats, FullTypeHints}
+import org.json4s.native.Serialization
+import org.json4s.native.Serialization.{write, writePretty}
 import play.api.mvc.{AbstractController, ControllerComponents}
 
 import scala.concurrent.ExecutionContext
@@ -18,9 +21,11 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class UserController @Inject()(cc: ControllerComponents, userDao: UserDao)(implicit ec: ExecutionContext) extends AbstractController(cc) {
 
+   implicit val usersFormats: Formats = Serialization.formats(FullTypeHints(List(classOf[User])))
+
   def index() = Action.async { implicit request =>
     userDao.all().map {
-      users => Ok(Json.toJson(users))
+      users => Ok(writePretty(users))
     }
   }
 

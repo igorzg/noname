@@ -33,7 +33,7 @@ trait UserTable {
 
     def salt = column[String]("salt")
 
-    def birth = column[Date]("birth")
+    def birth = column[String]("birth")
 
     def gender = column[String]("gender")
 

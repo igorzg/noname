@@ -10,11 +10,16 @@ scalaVersion := "2.12.3"
 libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
 
+val json4sVersion = "3.5.3"
+val slickVersion = "3.0.1"
+
 libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "6.0.6",
-  "com.typesafe.play" %% "play-slick" % "3.0.1",
-  "com.typesafe.play" %% "play-slick-evolutions" % "3.0.1",
-  "com.github.t3hnar" %% "scala-bcrypt" % "3.0"
+  "com.github.t3hnar" %% "scala-bcrypt" % "3.0",
+  "com.typesafe.play" %% "play-slick" % slickVersion,
+  "com.typesafe.play" %% "play-slick-evolutions" % slickVersion,
+  "org.json4s" %% "json4s-native" % json4sVersion,
+  "org.json4s" %% "json4s-jackson" % json4sVersion
 )
 
 // Adds additional packages into Twirl
