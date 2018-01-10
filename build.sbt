@@ -13,7 +13,8 @@ libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2
 libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "6.0.6",
   "com.typesafe.play" %% "play-slick" % "3.0.1",
-  "com.typesafe.play" %% "play-slick-evolutions" % "3.0.1"
+  "com.typesafe.play" %% "play-slick-evolutions" % "3.0.1",
+  "com.github.t3hnar" %% "scala-bcrypt" % "3.0"
 )
 
 // Adds additional packages into Twirl
