@@ -2,7 +2,7 @@
 
 # --- !Ups
 
-CREATE TABLE `User` (
+CREATE TABLE `Users` (
   `user_id`    INT(10)      NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(80)  NOT NULL,
   `last_name`  VARCHAR(80)  NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE `User` (
   DEFAULT CHARSET = utf8;
 
 
-INSERT INTO `User` (`user_id`, `first_name`, `last_name`, `username`, `email`, `password`, `salt`, `birth`, `gender`, `country_id`) VALUES
+INSERT INTO `Users` (`user_id`, `first_name`, `last_name`, `username`, `email`, `password`, `salt`, `birth`, `gender`, `country_id`) VALUES
   (
     1, 'Admin', 'Admin', 'admin', 'igor@coder.io', '$2y$10$f5watXLN6fF.caKu2i1yuergTWASZZhRmW.kf14m1PI6zD1FVElFq',
     'Rm1NPZ5cxlIIRLvnbyuM', '2018-01-01', 'M', 54
@@ -28,4 +28,4 @@ INSERT INTO `User` (`user_id`, `first_name`, `last_name`, `username`, `email`, `
 
 # --- !Downs
 
-DROP TABLE `User`;
+DROP TABLE `Users`;

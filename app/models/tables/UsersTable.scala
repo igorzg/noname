@@ -10,12 +10,12 @@ import slick.jdbc.JdbcProfile
   */
 
 
-trait UserTable {
+trait UsersTable {
   self: HasDatabaseConfig[JdbcProfile] =>
 
   import profile.api._
 
-  class UserTable(tag: Tag) extends Table[User](tag, "User") {
+  class UsersTable(tag: Tag) extends Table[User](tag, "Users") {
 
     def user_id = column[Option[Int]]("user_id", O.PrimaryKey, O.AutoInc)
 

@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import models.dao.UserDao
+import models.dao.UsersDao
 import models.entity.User
 import org.json4s.{Formats, FullTypeHints}
 import org.json4s.native.Serialization
@@ -19,7 +19,7 @@ import scala.concurrent.ExecutionContext
   * @since 1.0
   */
 @Singleton
-class UserController @Inject()(cc: ControllerComponents, userDao: UserDao)(implicit ec: ExecutionContext) extends AbstractController(cc) {
+class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(implicit ec: ExecutionContext) extends AbstractController(cc) {
 
    implicit val usersFormats: Formats = Serialization.formats(FullTypeHints(List(classOf[User])))
 

@@ -5,11 +5,10 @@ package models.entity
   * @since 1.0
   */
 case class Country(
-                  country_id: Int,
-                  iso: String,
-                  name: String,
-                  nicename: String,
-                  iso3: String,
-                  numcode: Short,
-                  phonecode: Short
+                    country_id: Option[Int],
+                    iso: String,
+                    name: String,
+                    iso3: String,
+                    num_code: Short,
+                    phone_code: Short
                   )
