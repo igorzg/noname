@@ -1,7 +1,5 @@
 package models.entity
 
-import play.api.libs.json.Json
-
 /**
   * @author igorzg on 10.01.18.
   * @since 1.0
@@ -18,7 +16,3 @@ case class User(
                  gender: String,
                  country_id: Int
                )
-
-object User {
-
-}

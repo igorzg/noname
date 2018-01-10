@@ -1,7 +1,5 @@
 package models.tables
 
-import java.util.Date
-
 import models.entity.User
 import play.api.db.slick.HasDatabaseConfig
 import slick.jdbc.JdbcProfile
