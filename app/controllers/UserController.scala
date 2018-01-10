@@ -2,13 +2,16 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import models.UserDao
+import models.dao.UserDao
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents}
 
 import scala.concurrent.ExecutionContext
 
 /**
+  * This controller creates an `Action` to handle HTTP requests to the
+  * application's home page.
+  *
   * @author igorzg on 04.01.18.
   * @since 1.0
   */
