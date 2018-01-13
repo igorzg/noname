@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
   * @since 1.0
   */
 class CountriesDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
-  extends CountriesTable with HasDatabaseConfig[JdbcProfile] {
+  extends CountriesTable with HasDatabaseConfig[JdbcProfile]  {
 
   override protected val dbConfig = dbConfigProvider.get[JdbcProfile]
 

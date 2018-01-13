@@ -1,5 +1,8 @@
 package models.tables
 
+import java.sql.Timestamp
+import java.util.Date
+
 import models.entity.User
 import play.api.db.slick.HasDatabaseConfig
 import slick.jdbc.JdbcProfile
@@ -14,6 +17,11 @@ trait UsersTable {
   self: HasDatabaseConfig[JdbcProfile] =>
 
   import profile.api._
+
+  implicit def dateTime = MappedColumnType.base[Date, Timestamp](
+    dt => Timestamp.from(dt.toInstant),
+    ts => Date.from(ts.toInstant)
+  )
 
   class UsersTable(tag: Tag) extends Table[User](tag, "Users") {
 
@@ -31,7 +39,7 @@ trait UsersTable {
 
     def salt = column[String]("salt")
 
-    def birth = column[String]("birth")
+    def birth = column[Date]("birth")
 
     def gender = column[String]("gender")
 

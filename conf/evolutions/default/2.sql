@@ -2,12 +2,12 @@
 
 # --- !Ups
 CREATE TABLE `Countries` (
-  `country_id` INT(11)     NOT NULL AUTO_INCREMENT,
-  `iso`        CHAR(2)     NOT NULL,
-  `name`       VARCHAR(80) NOT NULL,
-  `iso3`       CHAR(3)              DEFAULT NULL,
-  `num_code`    SMALLINT(6)          DEFAULT NULL,
-  `phone_code`  INT(5)      NOT NULL,
+  `country_id` INT(11)  UNSIGNED NOT NULL AUTO_INCREMENT,
+  `iso`        CHAR(2)           NOT NULL,
+  `name`       VARCHAR(80)       NOT NULL,
+  `iso3`       CHAR(3)                    DEFAULT NULL,
+  `num_code`   SMALLINT(6)                DEFAULT NULL,
+  `phone_code` INT(5)            NOT NULL,
   PRIMARY KEY (`country_id`)
 )
   ENGINE = InnoDB

@@ -1,5 +1,7 @@
 package models.entity
 
+import java.util.Date
+
 /**
   * @author igorzg on 10.01.18.
   * @since 1.0
@@ -12,7 +14,7 @@ case class User(
                  email: String,
                  password: String,
                  salt: String,
-                 birth: String,
+                 birth: Date,
                  gender: String,
                  country_id: Int
                )
