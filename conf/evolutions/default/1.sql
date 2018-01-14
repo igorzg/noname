@@ -48,6 +48,11 @@ CREATE TABLE `User_Role` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+CREATE INDEX `idx_role_id`
+  ON `User_Role` (`role_id`);
+CREATE INDEX `idx_user_id`
+  ON `User_Role` (`user_id`);
+
 CREATE TABLE `Role_Permission` (
   `role_id` INT(10) UNSIGNED NOT NULL,
   `perm_id` INT(10) UNSIGNED NOT NULL,
@@ -56,6 +61,11 @@ CREATE TABLE `Role_Permission` (
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+CREATE INDEX `idx_role_id`
+  ON `Role_Permission` (`role_id`);
+CREATE INDEX `idx_perm_id`
+  ON `Role_Permission` (`perm_id`);
 
 INSERT INTO `Users` (`user_id`, `first_name`, `last_name`, `username`, `email`, `password`, `salt`, `birth`, `gender`, `country_id`)
 VALUES
