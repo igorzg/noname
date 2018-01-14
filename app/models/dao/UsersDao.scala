@@ -21,8 +21,8 @@ class UsersDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   import profile.api._
 
-  private lazy val users = TableQuery[UsersTable]
+  private lazy val query = TableQuery[UsersTable]
 
-  def all(): Future[Seq[User]] = db.run(users.result).map(_.toList)
+  def all(): Future[Seq[User]] = db.run(query.result).map(_.toList)
 
 }

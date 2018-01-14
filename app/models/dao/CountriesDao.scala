@@ -20,8 +20,8 @@ class CountriesDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
 
   import profile.api._
 
-  private lazy val countries = TableQuery[CountriesTable]
+  private lazy val query = TableQuery[CountriesTable]
 
-  def all(): Future[Seq[Country]] = db.run(countries.result).map(_.toList)
+  def all(): Future[Seq[Country]] = db.run(query.result).map(_.toList)
 
 }
