@@ -6,4 +6,4 @@
 # An example controller showing a sample home page
 GET        /                   controllers.StatusController.index
 GET        /users              controllers.UserController.index
-GET        /permissions        controllers.UserController.index
+GET        /permissions        controllers.PermissionsController.index
