@@ -4,8 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import models.dao.UsersDao
 import models.entity.User
-import org.json4s.{Formats, FullTypeHints}
-import org.json4s.native.Serialization
+import org.json4s.{DefaultFormats, FieldSerializer, Formats}
 import org.json4s.native.Serialization.{write, writePretty}
 import play.api.mvc.{AbstractController, ControllerComponents}
 
@@ -21,7 +20,14 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(implicit ec: ExecutionContext) extends AbstractController(cc) {
 
-   implicit val usersFormats: Formats = Serialization.formats(FullTypeHints(List(classOf[User])))
+  private val ignoreFields = FieldSerializer[User](
+    {
+      case ("salt", _) => None
+      case ("password", _) => None
+    }
+  )
+
+  implicit val usersFormats: Formats = DefaultFormats + ignoreFields
 
   def index() = Action.async { implicit request =>
     userDao.all().map {
