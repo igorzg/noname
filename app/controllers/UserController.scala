@@ -55,7 +55,7 @@ class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(impl
                 write(
                   Map(
                     "message" -> "User successfully authenticated",
-                    "token" -> UUID.randomUUID().toString
+                    "token" -> UUID.randomUUID().toString.concat("-" + System.currentTimeMillis().toString)
                   )
                 )
               )
