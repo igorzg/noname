@@ -6,6 +6,8 @@ import models.entity.User
 import models.tables.UsersTable
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.jdbc.JdbcProfile
+import com.github.t3hnar.bcrypt._
+import play.Logger
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -24,5 +26,29 @@ class UsersDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   private lazy val query = TableQuery[UsersTable]
 
   def all(): Future[Seq[User]] = db.run(query.result).map(_.toList)
+
+  def findByUsername(username: String): Future[Option[User]] = {
+    db.run(query.filter(user => user.email === username || user.username === username).result.headOption)
+  }
+
+  def verifyUser(username: String, password: String): Future[Boolean] = {
+    findByUsername(username)
+      .map {
+        case Some(user: User) => {
+          val salt = generateSalt
+          Logger.debug("password {} salt {} ", password.bcrypt(salt), salt)
+
+          try {
+            Logger.debug("IsBecrypt {} salt {} info {}", password, user.salt, password.isBcrypted(user.password).toString)
+            password.isBcrypted(user.password)
+          } catch {
+            case e: Exception =>
+              Logger.error("Invalid salt", e)
+              false
+          }
+        }
+        case None => false
+      }
+  }
 
 }

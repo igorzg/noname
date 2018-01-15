@@ -4,6 +4,10 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET        /                   controllers.StatusController.index
-GET        /users              controllers.UserController.index
-GET        /permissions        controllers.PermissionsController.index
+GET         /                    controllers.StatusController.index
+
+# users controller
+GET         /users               controllers.UserController.index
+POST        /authenticate        controllers.UserController.authenticate
+
+GET         /permissions         controllers.PermissionsController.index
