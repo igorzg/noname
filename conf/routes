@@ -9,5 +9,7 @@ GET         /                    controllers.StatusController.index
 # users controller
 GET         /users               controllers.UserController.index
 POST        /authenticate        controllers.UserController.authenticate
+PUT         /users               controllers.UserController.update
 
+# Permissions
 GET         /permissions         controllers.PermissionsController.index

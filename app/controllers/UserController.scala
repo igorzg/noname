@@ -8,7 +8,7 @@ import models.dao.UsersDao
 import models.entity.User
 import org.json4s.{DefaultFormats, FieldSerializer, Formats}
 import org.json4s.native.Serialization.{write, writePretty}
-import org.json4s.native.parseJsonOpt
+import org.json4s.native.JsonMethods._
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,16 +32,46 @@ class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(impl
 
   implicit val formats: Formats = DefaultFormats
 
-
   def index(): Action[AnyContent] = Action.async { implicit request =>
     userDao.all().map {
-      users => Ok(writePretty(users)(formats + ignoreFields))
+      users => Ok(write(users)(formats + ignoreFields))
     }
   }
 
+  def update(): Action[AnyContent] = Action.async { implicit request =>
+    val data = parseOpt(request.body.asText.get)
+    if (data.isDefined) {
+      val user: Option[User] = data.get.extractOpt[User]
+      if (user.isDefined) {
+        if (user.get.user_id.isDefined) {
+          userDao.updateById(user.get).map {
+            result => Ok(result.toString)
+          }
+        } else {
+          Future.successful(BadRequest(write(
+            Map(
+              "message" -> "Missing user_id"
+            )
+          )))
+        }
+      } else {
+        Future.successful(BadRequest(write(
+          Map(
+            "message" -> "Cannot cast json to User"
+          )
+        )))
+      }
+    } else {
+      Future.successful(BadRequest(write(
+        Map(
+          "message" -> "Cannot parse json"
+        )
+      )))
+    }
+  }
 
   def authenticate(): Action[AnyContent] = Action.async { implicit request =>
-    val data = parseJsonOpt(request.body.asText.get)
+    val data = parseOpt(request.body.asText.get)
     if (data.isDefined) {
       val credentials: Option[Credentials] = data.get.extractOpt[Credentials]
       if (credentials.isDefined) {

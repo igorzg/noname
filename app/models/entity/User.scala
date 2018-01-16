@@ -17,4 +17,19 @@ case class User(
                  birth: Date,
                  gender: String,
                  country_id: Int
-               )
+               ) {
+  def merge(user: User): User = {
+    User(
+      user_id,
+      user.first_name,
+      user.last_name,
+      user.username,
+      user.email,
+      password,
+      salt,
+      user.birth,
+      user.gender,
+      user.country_id
+    )
+  }
+}
