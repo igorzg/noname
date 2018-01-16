@@ -38,6 +38,12 @@ class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(impl
     }
   }
 
+  def get(user_id: Int): Action[AnyContent] = Action.async { implicit request =>
+    userDao.findById(user_id).map {
+      user => Ok(write(user)(formats + ignoreFields))
+    }
+  }
+
   def update(): Action[AnyContent] = Action.async { implicit request =>
     val data = parseOpt(request.body.asText.get)
     if (data.isDefined) {

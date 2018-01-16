@@ -31,8 +31,8 @@ class UsersDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
     db.run(query.filter(user => user.email === username || user.username === username).result.headOption)
   }
 
-  def findById(user: User): Future[Option[User]] = {
-    db.run(query.filter(_.user_id === user.user_id).result.headOption)
+  def findById(id: Int): Future[Option[User]] = {
+    db.run(query.filter(_.user_id === id).result.headOption)
   }
 
   def updateById(user: User): Future[Int] = {
