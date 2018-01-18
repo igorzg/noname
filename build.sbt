@@ -18,7 +18,6 @@ libraryDependencies ++= Seq(
   "com.github.t3hnar" %% "scala-bcrypt" % "3.0",
   "com.typesafe.play" %% "play-slick" % slickVersion,
   "com.typesafe.play" %% "play-slick-evolutions" % slickVersion,
-  "org.json4s" %% "json4s-native" % json4sVersion,
   "org.json4s" %% "json4s-jackson" % json4sVersion
 )
 

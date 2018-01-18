@@ -7,8 +7,8 @@ import models.Credentials
 import models.dao.UsersDao
 import models.entity.User
 import org.json4s.{DefaultFormats, FieldSerializer, Formats}
-import org.json4s.native.Serialization.{write, writePretty}
-import org.json4s.native.JsonMethods._
+import org.json4s.jackson.Serialization.write
+import org.json4s.jackson.JsonMethods._
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 
 import scala.concurrent.{ExecutionContext, Future}

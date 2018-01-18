@@ -1,6 +1,6 @@
 package models.tables
 
-import models.entity.{Permission}
+import models.entity.Permission
 import play.api.db.slick.HasDatabaseConfig
 import slick.jdbc.JdbcProfile
 
