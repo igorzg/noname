@@ -3,7 +3,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import models.dao.PermissionsDao
-import org.json4s.native.Serialization.writePretty
+import org.json4s.jackson.Serialization.writePretty
 import org.json4s.{DefaultFormats, Formats}
 import play.api.mvc.{AbstractController, ControllerComponents}
 

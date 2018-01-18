@@ -36,7 +36,27 @@ class UsersDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   }
 
   def updateById(user: User): Future[Int] = {
-    db.run(query.filter(_.user_id === user.user_id).update(user))
+    db.run(
+      query.filter(_.user_id === user.user_id)
+        .map(u => (
+          u.first_name,
+          u.last_name,
+          u.username,
+          u.email,
+          u.birth,
+          u.gender,
+          u.country_id
+        ))
+        .update(
+          user.first_name,
+          user.last_name,
+          user.username,
+          user.email,
+          user.birth,
+          user.gender,
+          user.country_id
+        )
+    )
   }
 
   def verifyUser(username: String, password: String): Future[Boolean] = {

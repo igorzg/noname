@@ -12,8 +12,8 @@ case class User(
                  last_name: String,
                  username: String,
                  email: String,
-                 password: String,
-                 salt: String,
+                 password: String = "",
+                 salt: String = "",
                  birth: Date,
                  gender: String,
                  country_id: Int
