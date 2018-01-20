@@ -56,7 +56,8 @@ trait UsersTable {
       birth,
       gender,
       country_id
-    ) <> ((User.apply _).tupled, User.unapply _)
+    ) <> (User.tupled, User.unapply)
+
   }
 
 }
