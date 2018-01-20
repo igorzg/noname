@@ -3,6 +3,7 @@ package models.entity
 import java.util.Date
 
 import com.fasterxml.jackson.annotation.{JsonIgnore, JsonIgnoreProperties}
+import models.entity.annotations.Transient
 
 /**
   * @author igorzg on 10.01.18.
@@ -20,7 +21,7 @@ case class User(
                  birth: Date,
                  gender: String,
                  @JsonIgnore country_id: Int,
-                 var country: Option[Country] = None
+                 @Transient var country: Option[Country] = None
                ) {
   def merge(user: User): User = {
     User(
