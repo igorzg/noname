@@ -2,7 +2,7 @@ package models.dao
 
 import javax.inject.Inject
 
-import models.entity.User
+import models.entity.{Country, User}
 import models.tables.UsersTable
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.jdbc.JdbcProfile
@@ -16,14 +16,21 @@ import scala.concurrent.{ExecutionContext, Future}
   * @since 1.0
   */
 
-class UsersDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
+class UsersDao @Inject()(
+                          protected val dbConfigProvider: DatabaseConfigProvider,
+                          val countriesDao: CountriesDao
+                        )(implicit ec: ExecutionContext)
   extends UsersTable with HasDatabaseConfig[JdbcProfile] {
 
   override protected val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import profile.api._
 
-  private lazy val query = TableQuery[UsersTable]
+  class UsersTableImpl(tag: Tag) extends UsersTable(tag) {
+    def country = foreignKey("Users_country_id", country_id, TableQuery[countriesDao.CountriesTable])(_.country_id.get)
+  }
+
+  lazy val query = TableQuery[UsersTableImpl]
 
   def all(): Future[Seq[User]] = db.run(query.result).map(_.toList)
 
@@ -32,7 +39,14 @@ class UsersDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   }
 
   def findById(id: Int): Future[Option[User]] = {
-    db.run(query.filter(_.user_id === id).result.headOption)
+    val jQuery = for {
+      (u, c) <- query.filter(_.user_id === id).join(countriesDao.query).on(_.country_id === _.country_id)
+    } yield (u, c)
+    db.run(
+      jQuery.result.headOption.map {
+        data: Option[(User, Country)] => Option(data.get._1.copy(country = Option(data.get._2)))
+      }
+    )
   }
 
   def updateById(user: User): Future[Int] = {

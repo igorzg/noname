@@ -7,7 +7,7 @@ import org.json4s.{Formats, NoTypeHints}
 import play.api.Configuration
 import play.api.mvc.{AbstractController, ControllerComponents}
 import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.write
+import helpers.JsonHelper._
 
 /**
   * This controller creates an `Action` to handle HTTP requests to the

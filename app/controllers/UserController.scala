@@ -3,13 +3,14 @@ package controllers
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
+import com.fasterxml.jackson.core.`type`.TypeReference
+import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import models.Credentials
 import models.dao.UsersDao
 import models.entity.User
 import org.json4s.{DefaultFormats, FieldSerializer, Formats}
-import org.json4s.jackson.Serialization.write
-import org.json4s.jackson.JsonMethods._
-import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import helpers.JsonHelper._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,11 @@ class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(impl
     }
   )
 
-  implicit val formats: Formats = DefaultFormats
+  private implicit val userType: TypeReference[User] = new TypeReference[User]() {}
+
+  private implicit val credentialsType: TypeReference[Credentials] = new TypeReference[Credentials]() {}
+
+  private implicit val formats: Formats = DefaultFormats
 
   def index(): Action[AnyContent] = Action.async { implicit request =>
     userDao.all().map {
@@ -40,14 +45,15 @@ class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(impl
 
   def get(user_id: Int): Action[AnyContent] = Action.async { implicit request =>
     userDao.findById(user_id).map {
-      user => Ok(write(user)(formats + ignoreFields))
+      user =>
+        val value = mapper.registerModule(new DefaultScalaModule).writeValueAsString(user.get)
+        Ok(value)
     }
   }
 
   def update(): Action[AnyContent] = Action.async { implicit request =>
-    val data = parseOpt(request.body.asText.get)
-    if (data.isDefined) {
-      val user: Option[User] = data.get.extractOpt[User]
+    val user = parseOpt[User](request.body.asText.get)
+    if (user.isDefined) {
       if (user.isDefined) {
         if (user.get.user_id.isDefined) {
           userDao.updateById(user.get).map {
@@ -77,28 +83,19 @@ class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(impl
   }
 
   def authenticate(): Action[AnyContent] = Action.async { implicit request =>
-    val data = parseOpt(request.body.asText.get)
-    if (data.isDefined) {
-      val credentials: Option[Credentials] = data.get.extractOpt[Credentials]
-      if (credentials.isDefined) {
-        userDao.verifyUser(credentials.get.username, credentials.get.password).map {
-          isLoggedIn: Boolean => {
-            if (isLoggedIn) {
-              Ok(write(
-                Map(
-                  "message" -> "User successfully authenticated",
-                  "token" -> UUID.randomUUID().toString.concat("-" + System.currentTimeMillis().toString)
-                )
-              ))
-            } else Unauthorized
-          }
+    val credentials = parseOpt[Credentials](request.body.asText.get)
+    if (credentials.isDefined) {
+      userDao.verifyUser(credentials.get.username, credentials.get.password).map {
+        isLoggedIn: Boolean => {
+          if (isLoggedIn) {
+            Ok(write(
+              Map(
+                "message" -> "User successfully authenticated",
+                "token" -> UUID.randomUUID().toString.concat("-" + System.currentTimeMillis().toString)
+              )
+            ))
+          } else Unauthorized
         }
-      } else {
-        Future.successful(BadRequest(write(
-          Map(
-            "message" -> "Invalid parameters {username, password}"
-          )
-        )))
       }
     } else {
       Future.successful(BadRequest(write(
