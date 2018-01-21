@@ -1,6 +1,6 @@
 package models.tables
 
-import models.entity.Role
+import models.entity.{Role, User}
 import play.api.db.slick.HasDatabaseConfig
 import slick.jdbc.JdbcProfile
 
@@ -19,7 +19,7 @@ trait RolesTable {
 
     def name = column[String]("name")
 
-    def * = (role_id, name) <> (Role.tupled, Role.unapply)
+    def * = (role_id, name) <> ((Role.apply _).tupled, Role.unapply)
   }
 
 }

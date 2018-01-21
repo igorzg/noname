@@ -1,6 +1,6 @@
 package models.tables
 
-import models.entity.Country
+import models.entity.{Country, Permission}
 import play.api.db.slick.HasDatabaseConfig
 import slick.jdbc.JdbcProfile
 
@@ -35,7 +35,7 @@ trait CountriesTable {
       iso3,
       num_code,
       phone_code
-      ) <> (Country.tupled, Country.unapply)
+      ) <> ((Country.apply _).tupled, Country.unapply)
   }
 
 }

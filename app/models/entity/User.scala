@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.{JsonIgnore, JsonIgnoreProperties}
   * @since 1.0
   */
 @Entity
+@Deprecated
 @JsonIgnoreProperties(ignoreUnknown = true)
 case class User(
                  var user_id: Option[Int],
@@ -20,7 +21,7 @@ case class User(
                  @JsonIgnore salt: String,
                  birth: Date,
                  gender: String,
-                 @JsonIgnore country_id: Int,
+                 @JsonIgnore country_id: Int
                  // @Transient var country: Option[Country] = None
                ) {
   def merge(user: User): User = {

@@ -1,6 +1,6 @@
 package models.tables
 
-import models.entity.Permission
+import models.entity.{Permission, Role}
 import play.api.db.slick.HasDatabaseConfig
 import slick.jdbc.JdbcProfile
 
@@ -21,7 +21,7 @@ trait PermissionsTable {
 
     def action = column[String]("action")
 
-    def * = (perm_id, name, action) <> (Permission.tupled, Permission.unapply)
+    def * = (perm_id, name, action) <> ((Permission.apply _).tupled, Permission.unapply)
   }
 
 }
