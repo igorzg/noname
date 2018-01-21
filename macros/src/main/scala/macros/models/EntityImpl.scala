@@ -11,11 +11,9 @@ import scala.reflect.macros.whitebox
   * @author igorzg on 21.01.18.
   * @since 1.0
   */
-case class Entity() extends StaticAnnotation {
-  def macroTransform(annottees: Any*): Any = macro Entity.impl
-}
 
-object Entity {
+
+object EntityImpl {
   def impl(c: whitebox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
     import c.universe._
 
@@ -44,4 +42,8 @@ object Entity {
       case _ => c.abort(c.enclosingPosition, "Invalid annottee")
     }
   }
+}
+
+class Entity extends StaticAnnotation {
+  def macroTransform(annottees: Any*): Any = macro EntityImpl.impl
 }
