@@ -1,14 +1,15 @@
 package models.entity
 
 import java.util.Date
-
+import macros.models.annotations.Transient
+import macros.models.Entity
 import com.fasterxml.jackson.annotation.{JsonIgnore, JsonIgnoreProperties}
-import models.entity.annotations.Transient
 
 /**
   * @author igorzg on 10.01.18.
   * @since 1.0
   */
+@Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 case class User(
                  var user_id: Option[Int],
@@ -37,6 +38,7 @@ case class User(
       user.country_id
     )
   }
+
 }
 
 /**

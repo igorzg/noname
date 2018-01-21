@@ -1,4 +1,4 @@
-package models.entity.annotations
+package macros.models.annotations
 
 import scala.annotation.StaticAnnotation
 

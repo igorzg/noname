@@ -3,18 +3,23 @@ organization := "com.noname"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val macros = project.in(file("macros"))
+lazy val root = (project in file(".")).dependsOn(macros).enablePlugins(PlayScala)
 
-scalaVersion := "2.12.3"
-
-libraryDependencies += guice
-libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
+// add compiler
 
 val json4sVersion = "3.5.3"
 val jacksonVersion = "2.9.2"
 val slickVersion = "3.0.1"
+val scalaVersionNum = "2.12.4"
+
+scalaVersion := scalaVersionNum
+// scalacOptions += "-Ymacro-debug-lite"
+libraryDependencies += guice
+libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
 
 libraryDependencies ++= Seq(
+
   "mysql" % "mysql-connector-java" % "6.0.6",
 
   "com.github.t3hnar" %% "scala-bcrypt" % "3.0",
