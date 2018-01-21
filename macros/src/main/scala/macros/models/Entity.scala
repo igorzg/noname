@@ -13,37 +13,43 @@ import scala.reflect.macros.whitebox
   */
 
 
-object EntityImpl {
+private object Entity {
   def impl(c: whitebox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
     import c.universe._
+    import Flag._
 
-    def extractCaseClassesParts(classDecl: ClassDef) = classDecl match {
+    def extractCaseClassesParts(classDef: ClassDef) = classDef match {
       case q"case class $className(..$fields) extends ..$parents { ..$body }" =>
         (className, fields, parents, body)
     }
 
-
-    def modifiedDeclaration(classDecl: ClassDef) = {
+    def modifiedDeclaration(classDecl: ClassDef): Tree = {
       val (className, fields, parents, body) = extractCaseClassesParts(classDecl)
-
       val params = fields.asInstanceOf[List[ValDef]] map { p => p.duplicate }
 
-      c.Expr[Any](
-        q"""
-        case class $className ( ..$params ) extends ..$parents {
+      q"""case class $className ( ..$params ) extends ..$parents {
           ..$body
         }
       """
-      )
     }
 
-    annottees map (_.tree) toList match {
-      case (classDecl: ClassDef) :: Nil => modifiedDeclaration(classDecl)
-      case _ => c.abort(c.enclosingPosition, "Invalid annottee")
+    val p = c.enclosingPosition
+
+    val inputs = annottees.map(_.tree).toList
+
+    val result: Tree = {
+      // Tree manipulation code
+      inputs match {
+        case (classDef: ClassDef) :: Nil => modifiedDeclaration(classDef)
+        case _ => c.abort(c.enclosingPosition, "Invalid annottee")
+      }
     }
+
+    // if no errors, return the original syntax tree
+    c.Expr[Any](result)
   }
 }
 
 class Entity extends StaticAnnotation {
-  def macroTransform(annottees: Any*): Any = macro EntityImpl.impl
+  def macroTransform(annottees: Any*): Any = macro Entity.impl
 }

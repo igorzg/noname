@@ -38,14 +38,12 @@ class UsersDao @Inject()(
     db.run(query.filter(user => user.email === username || user.username === username).result.headOption)
   }
 
-  def findById(id: Int): Future[Option[User]] = {
+  def findById(id: Int): Future[Option[(User, Country)]] = {
     val jQuery = for {
       (u, c) <- query.filter(_.user_id === id).join(countriesDao.query).on(_.country_id === _.country_id)
     } yield (u, c)
     db.run(
-      jQuery.result.headOption.map {
-        data: Option[(User, Country)] => Option(data.get._1.copy(country = Option(data.get._2)))
-      }
+      jQuery.result.headOption
     )
   }
 
