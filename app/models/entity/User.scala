@@ -1,15 +1,16 @@
 package models.entity
 
 import java.util.Date
+
 import macros.models.Entity
 import com.fasterxml.jackson.annotation.{JsonIgnore, JsonIgnoreProperties}
+import macros.models.annotations.Transient
 
 /**
   * @author igorzg on 10.01.18.
   * @since 1.0
   */
 @Entity
-@Deprecated
 @JsonIgnoreProperties(ignoreUnknown = true)
 case class User(
                  var user_id: Option[Int],
@@ -22,7 +23,6 @@ case class User(
                  birth: Date,
                  gender: String,
                  @JsonIgnore country_id: Int
-                 // @Transient var country: Option[Country] = None
                ) {
   def merge(user: User): User = {
     User(
