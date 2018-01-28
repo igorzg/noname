@@ -3,6 +3,7 @@ package macros.models
 import scala.annotation.{StaticAnnotation, compileTimeOnly}
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
+import annotations.IgnoreOnSlackQuery
 
 /**
   * Entity macro which create specific apply & unapply for table entity removing @Transient fields
@@ -20,49 +21,56 @@ private object Entity {
     val inputs = annottees.map(_.tree).toList
     val classDef: ClassDef = inputs match {
       case (classDef: ClassDef) :: Nil => classDef
-      case _                           => c.abort(p, "Invalid annottee")
+      case _ => c.abort(p, "Annotation can be apply only on class")
     }
 
     val (mods: Modifiers,
-         tpname,
-         tparams,
-         ctorMods,
-         paramss,
-         earlydefns,
-         parents,
-         self,
-         body) = classDef match {
+    tpname: TypeName,
+    tparams,
+    ctorMods,
+    paramss: List[ValDef],
+    earlydefns,
+    parents,
+    self,
+    body) = classDef match {
       case q"$mods class $tpname[..$tparams] $ctorMods(..$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$body }" =>
         (mods,
-         tpname,
-         tparams,
-         ctorMods,
-         paramss,
-         earlydefns,
-         parents,
-         self,
-         body)
+          tpname,
+          tparams,
+          ctorMods,
+          paramss.map(item => item.asInstanceOf[ValDef]).toList,
+          earlydefns,
+          parents,
+          self,
+          body)
     }
 
-    val tupleParams: List[ValDef] =
-      paramss.map(item => item.asInstanceOf[ValDef]).toList
-    val applyParams = tupleParams.map(i => q"${i.name}:${i.tpt}")
-    val applyArgs = tupleParams.map(i => q"${i.name}")
-    val result: Tree = q"""
+    val filterParams = paramss.filter(item => {
+      val isTransient = item.mods.annotations.find {
+        case tq"$tpname" => tpname.equalsStructure(q"new ${TypeName(IgnoreOnSlackQuery.toString())}")
+      }
+      isTransient.isEmpty
+    })
+    val applyArgs = filterParams.zipWithIndex.map {
+      case (e, i) => Select(Ident(TermName("arg")), TermName("_"+(i + 1)))
+    }
+    val result: Tree =
+      q"""
           @..${mods.annotations}
-          case class $tpname[..$tparams] $ctorMods(..$paramss)  extends { ..$earlydefns } with ..$parents{
+         case class $tpname[..$tparams] $ctorMods(..$paramss)  extends { ..$earlydefns } with ..$parents{}
+
+         $mods object ${tpname.toTermName} extends { ..$earlydefns } with ..$parents {
             $self => ..$body
 
-            def apply(..$applyParams): $tpname = {
-                ${TermName(tpname.toString)}(..$applyArgs)
+            def sApply(arg: (..${filterParams.map(_.tpt)})): $tpname = {
+               ${tpname.toTermName}(..$applyArgs)
             }
 
-            def unapply(user: $tpname): Option[(..${tupleParams.map(_.tpt)})] = {
-                Some((..${tupleParams.map(i => q"user.${i.name}")}))
+            def sUnapply(user: $tpname): Option[(..${filterParams.map(_.tpt)})] = {
+               Some((..${filterParams.map(i => q"user.${i.name}")}))
             }
-          }
+        }
        """
-
     // if no errors, return the original syntax tree
     c.Expr[Any](result)
   }

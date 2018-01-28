@@ -15,7 +15,7 @@ val slickVersion = "3.0.1"
 val scalaVersionNum = "2.12.4"
 
 scalaVersion := scalaVersionNum
-// scalacOptions += "-Ymacro-debug-lite"
+scalacOptions += "-Ymacro-debug-lite"
 libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
 
