@@ -3,7 +3,7 @@ package macros.models
 import scala.annotation.{StaticAnnotation, compileTimeOnly}
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
-import annotations.IgnoreOnSlackTableMapping
+import annotations.IgnoreOnSlickTableMapping
 
 /**
   * Entity macro which create specific apply & unapply for table entity removing @Transient fields
@@ -47,7 +47,7 @@ private object Entity {
 
     val filterParams = paramss.filter(item => {
       val isTransient = item.mods.annotations.find {
-        case tq"$tpname" => tpname.equalsStructure(q"new ${TypeName(IgnoreOnSlackTableMapping.toString())}")
+        case tq"$tpname" => tpname.equalsStructure(q"new ${TypeName(IgnoreOnSlickTableMapping.toString())}")
       }
       isTransient.isEmpty
     })

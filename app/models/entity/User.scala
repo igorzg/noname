@@ -4,7 +4,7 @@ import java.util.Date
 
 import com.fasterxml.jackson.annotation.{JsonIgnore, JsonIgnoreProperties}
 import macros.models.Entity
-import macros.models.annotations.IgnoreOnSlackTableMapping
+import macros.models.annotations.IgnoreOnSlickTableMapping
 
 /**
   * @author igorzg on 10.01.18.
@@ -23,5 +23,5 @@ case class User(
     birth: Date,
     gender: String,
     @JsonIgnore country_id: Int,
-    @IgnoreOnSlackTableMapping var country: Option[Country] = None
+    @IgnoreOnSlickTableMapping var country: Option[Country] = None
 )

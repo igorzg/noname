@@ -26,14 +26,14 @@ class UsersDao @Inject()(
 
   import profile.api._
 
-  class UsersTableImpl(tag: Tag) extends UsersTable(tag) {
+  class UsersTableWithFk(tag: Tag) extends UsersTable(tag) {
     def country =
       foreignKey("Users_country_id",
                  country_id,
                  TableQuery[countriesDao.CountriesTable])(_.country_id.get)
   }
 
-  lazy val query = TableQuery[UsersTableImpl]
+  lazy val query = TableQuery[UsersTableWithFk]
 
   def all(): Future[Seq[User]] = db.run(query.result).map(_.toList)
 
