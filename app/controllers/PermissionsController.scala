@@ -17,13 +17,16 @@ import scala.concurrent.ExecutionContext
   * @since 1.0
   */
 @Singleton
-class PermissionsController @Inject()(cc: ControllerComponents, permissionsDao: PermissionsDao)(implicit ec: ExecutionContext) extends AbstractController(cc) {
+class PermissionsController @Inject()(
+    cc: ControllerComponents,
+    permissionsDao: PermissionsDao)(implicit ec: ExecutionContext)
+    extends AbstractController(cc) {
 
   implicit val usersFormats: Formats = DefaultFormats
 
   def index() = Action.async { implicit request =>
-    permissionsDao.all().map {
-      permissions => Ok(writePretty(permissions))
+    permissionsDao.all().map { permissions =>
+      Ok(writePretty(permissions))
     }
   }
 

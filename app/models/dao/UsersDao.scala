@@ -15,19 +15,22 @@ import scala.concurrent.{ExecutionContext, Future}
   * @author igorzg on 10.01.18.
   * @since 1.0
   */
-
 class UsersDao @Inject()(
-                          protected val dbConfigProvider: DatabaseConfigProvider,
-                          val countriesDao: CountriesDao
-                        )(implicit ec: ExecutionContext)
-  extends UsersTable with HasDatabaseConfig[JdbcProfile] {
+    protected val dbConfigProvider: DatabaseConfigProvider,
+    val countriesDao: CountriesDao
+)(implicit ec: ExecutionContext)
+    extends UsersTable
+    with HasDatabaseConfig[JdbcProfile] {
 
   override protected val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import profile.api._
 
   class UsersTableImpl(tag: Tag) extends UsersTable(tag) {
-    def country = foreignKey("Users_country_id", country_id, TableQuery[countriesDao.CountriesTable])(_.country_id.get)
+    def country =
+      foreignKey("Users_country_id",
+                 country_id,
+                 TableQuery[countriesDao.CountriesTable])(_.country_id.get)
   }
 
   lazy val query = TableQuery[UsersTableImpl]
@@ -35,12 +38,19 @@ class UsersDao @Inject()(
   def all(): Future[Seq[User]] = db.run(query.result).map(_.toList)
 
   def findByUsername(username: String): Future[Option[User]] = {
-    db.run(query.filter(user => user.email === username || user.username === username).result.headOption)
+    db.run(
+      query
+        .filter(user => user.email === username || user.username === username)
+        .result
+        .headOption)
   }
 
   def findById(id: Int): Future[Option[(User, Country)]] = {
     val jQuery = for {
-      (u, c) <- query.filter(_.user_id === id).join(countriesDao.query).on(_.country_id === _.country_id)
+      (u, c) <- query
+        .filter(_.user_id === id)
+        .join(countriesDao.query)
+        .on(_.country_id === _.country_id)
     } yield (u, c)
     db.run(
       jQuery.result.headOption
@@ -49,16 +59,19 @@ class UsersDao @Inject()(
 
   def updateById(user: User): Future[Int] = {
     db.run(
-      query.filter(_.user_id === user.user_id)
-        .map(u => (
-          u.first_name,
-          u.last_name,
-          u.username,
-          u.email,
-          u.birth,
-          u.gender,
-          u.country_id
-        ))
+      query
+        .filter(_.user_id === user.user_id)
+        .map(
+          u =>
+            (
+              u.first_name,
+              u.last_name,
+              u.username,
+              u.email,
+              u.birth,
+              u.gender,
+              u.country_id
+          ))
         .update(
           user.first_name,
           user.last_name,
@@ -79,7 +92,10 @@ class UsersDao @Inject()(
           Logger.debug("password {} salt {} ", password.bcrypt(salt), salt)
 
           try {
-            Logger.debug("IsBecrypt {} salt {} info {}", password, user.salt, password.isBcrypted(user.password).toString)
+            Logger.debug("IsBecrypt {} salt {} info {}",
+                         password,
+                         user.salt,
+                         password.isBcrypted(user.password).toString)
             password.isBcrypted(user.password)
           } catch {
             case e: Exception =>

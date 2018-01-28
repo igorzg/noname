@@ -13,8 +13,11 @@ import scala.concurrent.{ExecutionContext, Future}
   * @author igorzg on 14.01.18.
   * @since 1.0
   */
-class PermissionsDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
-  extends PermissionsTable with HasDatabaseConfig[JdbcProfile] {
+class PermissionsDao @Inject()(
+    protected val dbConfigProvider: DatabaseConfigProvider)(
+    implicit ec: ExecutionContext)
+    extends PermissionsTable
+    with HasDatabaseConfig[JdbcProfile] {
 
   override protected val dbConfig = dbConfigProvider.get[JdbcProfile]
 

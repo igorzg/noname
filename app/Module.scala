@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.SerializationFeature
   * @author igorzg on 20.01.18.
   * @since 1.0
   */
-class Module(environment: Environment, configuration: Configuration) extends AbstractModule {
+class Module(environment: Environment, configuration: Configuration)
+    extends AbstractModule {
 
   override def configure() = {
     if (environment.mode.equals(play.api.Mode.Dev)) {
@@ -16,4 +17,3 @@ class Module(environment: Environment, configuration: Configuration) extends Abs
   }
 
 }
-

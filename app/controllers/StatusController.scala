@@ -17,7 +17,9 @@ import helpers.JsonHelper._
   * @since 1.0
   */
 @Singleton
-class StatusController @Inject()(cc: ControllerComponents, configuration: Configuration) extends AbstractController(cc) {
+class StatusController @Inject()(cc: ControllerComponents,
+                                 configuration: Configuration)
+    extends AbstractController(cc) {
 
   implicit val statusFormats: Formats = Serialization.formats(NoTypeHints)
 

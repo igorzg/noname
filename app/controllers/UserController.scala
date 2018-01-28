@@ -4,7 +4,12 @@ import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
 import com.fasterxml.jackson.core.`type`.TypeReference
-import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import play.api.mvc.{
+  AbstractController,
+  Action,
+  AnyContent,
+  ControllerComponents
+}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import models.Credentials
 import models.dao.UsersDao
@@ -22,7 +27,8 @@ import scala.concurrent.{ExecutionContext, Future}
   * @since 1.0
   */
 @Singleton
-class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(implicit ec: ExecutionContext) extends AbstractController(cc) {
+class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(implicit ec: ExecutionContext)
+  extends AbstractController(cc) {
 
   private val ignoreFields = FieldSerializer[User](
     {
@@ -38,16 +44,17 @@ class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(impl
   private implicit val formats: Formats = DefaultFormats
 
   def index(): Action[AnyContent] = Action.async { implicit request =>
-    userDao.all().map {
-      users => Ok(write(users)(formats + ignoreFields))
+    userDao.all().map { users =>
+      Ok(write(users)(formats + ignoreFields))
     }
   }
 
   def get(user_id: Int): Action[AnyContent] = Action.async { implicit request =>
-    userDao.findById(user_id).map {
-      user =>
-        val value = mapper.registerModule(new DefaultScalaModule).writeValueAsString(user.get)
-        Ok(value)
+    userDao.findById(user_id).map { user =>
+      val value = mapper
+        .registerModule(new DefaultScalaModule)
+        .writeValueAsString(user.get)
+      Ok(value)
     }
   }
 
@@ -56,53 +63,66 @@ class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(impl
     if (user.isDefined) {
       if (user.isDefined) {
         if (user.get.user_id.isDefined) {
-          userDao.updateById(user.get).map {
-            result => Ok(result.toString)
+          userDao.updateById(user.get).map { result =>
+            Ok(result.toString)
           }
         } else {
-          Future.successful(BadRequest(write(
-            Map(
-              "message" -> "Missing user_id"
-            )
-          )))
+          Future.successful(
+            BadRequest(
+              write(
+                Map(
+                  "message" -> "Missing user_id"
+                )
+              )))
         }
       } else {
-        Future.successful(BadRequest(write(
-          Map(
-            "message" -> "Cannot cast json to User"
-          )
-        )))
+        Future.successful(
+          BadRequest(
+            write(
+              Map(
+                "message" -> "Cannot cast json to User"
+              )
+            )))
       }
     } else {
-      Future.successful(BadRequest(write(
-        Map(
-          "message" -> "Cannot parse json"
-        )
-      )))
+      Future.successful(
+        BadRequest(
+          write(
+            Map(
+              "message" -> "Cannot parse json"
+            )
+          )))
     }
   }
 
   def authenticate(): Action[AnyContent] = Action.async { implicit request =>
     val credentials = parseOpt[Credentials](request.body.asText.get)
     if (credentials.isDefined) {
-      userDao.verifyUser(credentials.get.username, credentials.get.password).map {
-        isLoggedIn: Boolean => {
+      userDao
+        .verifyUser(credentials.get.username, credentials.get.password)
+        .map { isLoggedIn: Boolean => {
           if (isLoggedIn) {
-            Ok(write(
-              Map(
-                "message" -> "User successfully authenticated",
-                "token" -> UUID.randomUUID().toString.concat("-" + System.currentTimeMillis().toString)
-              )
-            ))
+            Ok(
+              write(
+                Map(
+                  "message" -> "User successfully authenticated",
+                  "token" -> UUID
+                    .randomUUID()
+                    .toString
+                    .concat("-" + System.currentTimeMillis().toString)
+                )
+              ))
           } else Unauthorized
         }
-      }
+        }
     } else {
-      Future.successful(BadRequest(write(
-        Map(
-          "message" -> "Authenticate parameters has to be provided {username, password}"
-        )
-      )))
+      Future.successful(
+        BadRequest(
+          write(
+            Map(
+              "message" -> "Authenticate parameters has to be provided {username, password}"
+            )
+          )))
     }
   }
 
