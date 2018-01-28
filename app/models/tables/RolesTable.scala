@@ -19,7 +19,7 @@ trait RolesTable {
 
     def name = column[String]("name")
 
-    def * = (role_id, name) <> ((Role.apply _).tupled, Role.unapply)
+    def * = (role_id, name) <> (Role.tableApply, Role.tableUnapply)
   }
 
 }

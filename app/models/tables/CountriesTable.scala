@@ -35,7 +35,7 @@ trait CountriesTable {
       iso3,
       num_code,
       phone_code
-      ) <> ((Country.apply _).tupled, Country.unapply)
+      ) <> (Country.tableApply, Country.tableUnapply)
   }
 
 }

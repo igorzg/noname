@@ -21,7 +21,7 @@ trait PermissionsTable {
 
     def action = column[String]("action")
 
-    def * = (perm_id, name, action) <> ((Permission.apply _).tupled, Permission.unapply)
+    def * = (perm_id, name, action) <> (Permission.tableApply, Permission.tableUnapply)
   }
 
 }

@@ -62,11 +62,11 @@ private object Entity {
          $mods object ${tpname.toTermName} extends { ..$earlydefns } with ..$parents {
             $self => ..$body
 
-            def sApply(arg: (..${filterParams.map(_.tpt)})): $tpname = {
+            def tableApply(arg: (..${filterParams.map(_.tpt)})): $tpname = {
                ${tpname.toTermName}(..$applyArgs)
             }
 
-            def sUnapply(user: $tpname): Option[(..${filterParams.map(_.tpt)})] = {
+            def tableUnapply(user: $tpname): Option[(..${filterParams.map(_.tpt)})] = {
                Some((..${filterParams.map(i => q"user.${i.name}")}))
             }
         }
