@@ -11,8 +11,6 @@ import slick.jdbc.JdbcProfile
   * @author igorzg on 10.01.18.
   * @since 1.0
   */
-
-
 trait UsersTable {
   self: HasDatabaseConfig[JdbcProfile] =>
 
@@ -45,19 +43,19 @@ trait UsersTable {
 
     def country_id = column[Int]("country_id")
 
-    def * = (
-      user_id,
-      first_name,
-      last_name,
-      username,
-      email,
-      password,
-      salt,
-      birth,
-      gender,
-      country_id
-    ) <> (User.tableApply, User.tableUnapply)
-
+    def * =
+      (
+        user_id,
+        first_name,
+        last_name,
+        username,
+        email,
+        password,
+        salt,
+        birth,
+        gender,
+        country_id
+      ) <> (User.tableApply, User.tableUnapply)
   }
 
 }

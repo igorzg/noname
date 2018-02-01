@@ -52,24 +52,26 @@ private object Entity {
       isTransient.isEmpty
     })
     val applyArgs = filterParams.zipWithIndex.map {
-      case (e, i) => Select(Ident(TermName("arg")), TermName("_"+(i + 1)))
+      case (e, i) => Select(Ident(TermName("arg")), TermName("_" + (i + 1)))
     }
     val result: Tree =
       q"""
-          @..${mods.annotations}
-         case class $tpname[..$tparams] $ctorMods(..$paramss)  extends { ..$earlydefns } with ..$parents{}
+      @..${mods.annotations}
+      case class $tpname[..$tparams] $ctorMods(..$paramss)  extends { ..$earlydefns } with ..$parents{
+        $self => ..$body
+      }
 
-         $mods object ${tpname.toTermName} extends { ..$earlydefns } with ..$parents {
-            $self => ..$body
+      $mods object ${tpname.toTermName} extends { ..$earlydefns } with ..$parents {
+        $self => ..$body
 
-            def tableApply(arg: (..${filterParams.map(_.tpt)})): $tpname = {
-               ${tpname.toTermName}(..$applyArgs)
-            }
-
-            def tableUnapply(user: $tpname): Option[(..${filterParams.map(_.tpt)})] = {
-               Some((..${filterParams.map(i => q"user.${i.name}")}))
-            }
+        def tableApply(arg: (..${filterParams.map(_.tpt)})): $tpname = {
+           ${tpname.toTermName}(..$applyArgs)
         }
+
+        def tableUnapply(user: $tpname): Option[(..${filterParams.map(_.tpt)})] = {
+           Some((..${filterParams.map(i => q"user.${i.name}")}))
+        }
+      }
        """
     // if no errors, return the original syntax tree
     c.Expr[Any](result)

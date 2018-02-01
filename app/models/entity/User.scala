@@ -3,6 +3,8 @@ package models.entity
 import java.util.Date
 
 import com.fasterxml.jackson.annotation.{JsonIgnore, JsonIgnoreProperties}
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import helpers.deserializer.OptionIntDeserializer
 import macros.models.Entity
 import macros.models.annotations.IgnoreOnSlickTableMapping
 
@@ -13,7 +15,7 @@ import macros.models.annotations.IgnoreOnSlickTableMapping
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 case class User(
-    var user_id: Option[Int],
+    @JsonDeserialize(using = classOf[OptionIntDeserializer]) var user_id: Option[Int],
     first_name: String,
     last_name: String,
     username: String,
