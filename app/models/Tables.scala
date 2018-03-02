@@ -36,14 +36,15 @@ trait Tables {
 
     def phone_code = column[Short]("phone_code")
 
-    def * = (
-      country_id,
-      iso,
-      name,
-      iso3,
-      num_code,
-      phone_code
-    ) <> (Country.tableApply, Country.tableUnapply)
+    def * =
+      (
+        country_id,
+        iso,
+        name,
+        iso3,
+        num_code,
+        phone_code
+      ) <> (Country.tableApply, Country.tableUnapply)
   }
 
   /**
@@ -51,7 +52,8 @@ trait Tables {
     *
     * @param tag
     */
-  class PermissionsTable(tag: Tag) extends Table[Permission](tag, "Permissions") {
+  class PermissionsTable(tag: Tag)
+    extends Table[Permission](tag, "Permissions") {
 
     def perm_id = column[Option[Int]]("perm_id", O.PrimaryKey, O.AutoInc)
 
@@ -59,7 +61,8 @@ trait Tables {
 
     def action = column[String]("action")
 
-    def * = (perm_id, name, action) <> (Permission.tableApply, Permission.tableUnapply)
+    def * =
+      (perm_id, name, action) <> (Permission.tableApply, Permission.tableUnapply)
   }
 
   /**
@@ -67,12 +70,17 @@ trait Tables {
     *
     * @param tag
     */
-  class RolePermissionTable(tag: Tag) extends Table[RolePermission](tag, "Role_Permission") {
+  class RolePermissionTable(tag: Tag)
+    extends Table[RolePermission](tag, "Role_Permission") {
     def roleId = column[Int]("role_id")
 
     def permId = column[Int]("perm_id")
 
     def * = (roleId, permId) <> (RolePermission.tupled, RolePermission.unapply)
+
+    def perm = foreignKey("Role_Permission_perm_id", permId, TableQuery[PermissionsTable])(_.perm_id.get)
+
+    def role = foreignKey("Role_Permission_role_id", roleId, TableQuery[RolesTable])(_.role_id.get)
   }
 
   /**
@@ -100,6 +108,10 @@ trait Tables {
     def roleId = column[Int]("role_id")
 
     def * = (userId, roleId) <> (UserRole.tupled, UserRole.unapply)
+
+    def user = foreignKey("User_Role_user_id", userId, TableQuery[UsersTable])(_.user_id.get)
+
+    def role = foreignKey("User_Role_role_id", roleId, TableQuery[RolesTable])(_.role_id.get)
   }
 
   /**
@@ -107,7 +119,7 @@ trait Tables {
     *
     * @return
     */
-  implicit def dateTime = MappedColumnType.base[Date, Timestamp](
+  implicit def rdsTimestampToDate = MappedColumnType.base[Date, Timestamp](
     dt => Timestamp.from(dt.toInstant),
     ts => Date.from(ts.toInstant)
   )
@@ -149,9 +161,8 @@ trait Tables {
       ) <> (User.tableApply, User.tableUnapply)
 
     def country =
-      foreignKey("Users_country_id",
-        country_id,
-        TableQuery[CountriesTable])(_.country_id.get)
+      foreignKey("Users_country_id", country_id, TableQuery[CountriesTable])(
+        _.country_id.get)
   }
 
 }
