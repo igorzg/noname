@@ -3,7 +3,7 @@ package models.dao
 import javax.inject.Inject
 
 import models.entity.Country
-import models.tables.CountriesTable
+import models.Tables
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.jdbc.JdbcProfile
 
@@ -16,7 +16,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CountriesDao @Inject()(
     protected val dbConfigProvider: DatabaseConfigProvider)(
     implicit ec: ExecutionContext)
-    extends CountriesTable
+    extends Tables
     with HasDatabaseConfig[JdbcProfile] {
 
   override protected val dbConfig = dbConfigProvider.get[JdbcProfile]

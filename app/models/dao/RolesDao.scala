@@ -3,7 +3,7 @@ package models.dao
 import javax.inject.Inject
 
 import models.entity.Role
-import models.tables.RolesTable
+import models.Tables
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.jdbc.JdbcProfile
 
@@ -15,7 +15,7 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class RolesDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(
     implicit ec: ExecutionContext)
-    extends RolesTable
+    extends Tables
     with HasDatabaseConfig[JdbcProfile] {
 
   override protected val dbConfig = dbConfigProvider.get[JdbcProfile]

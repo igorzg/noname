@@ -10,7 +10,6 @@ import play.api.mvc.{
   AnyContent,
   ControllerComponents
 }
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import models.Credentials
 import models.dao.UsersDao
 import models.entity.User
@@ -51,9 +50,7 @@ class UserController @Inject()(cc: ControllerComponents, userDao: UsersDao)(impl
 
   def get(user_id: Int): Action[AnyContent] = Action.async { implicit request =>
     userDao.findById(user_id).map { user =>
-      val value = mapper
-        .registerModule(new DefaultScalaModule)
-        .writeValueAsString(user.get)
+      val value = mapper.writeValueAsString(user.get)
       Ok(value)
     }
   }

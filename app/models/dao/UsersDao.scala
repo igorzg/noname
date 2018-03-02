@@ -1,12 +1,11 @@
 package models.dao
 
 import javax.inject.Inject
-
 import models.entity.{Country, User}
-import models.tables.UsersTable
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.jdbc.JdbcProfile
 import com.github.t3hnar.bcrypt._
+import models.Tables
 import play.Logger
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -19,21 +18,14 @@ class UsersDao @Inject()(
     protected val dbConfigProvider: DatabaseConfigProvider,
     val countriesDao: CountriesDao
 )(implicit ec: ExecutionContext)
-    extends UsersTable
+    extends Tables
     with HasDatabaseConfig[JdbcProfile] {
 
   override protected val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import profile.api._
 
-  class UsersTableWithFk(tag: Tag) extends UsersTable(tag) {
-    def country =
-      foreignKey("Users_country_id",
-                 country_id,
-                 TableQuery[countriesDao.CountriesTable])(_.country_id.get)
-  }
-
-  lazy val query = TableQuery[UsersTableWithFk]
+  lazy val query = TableQuery[UsersTable]
 
   def all(): Future[Seq[User]] = db.run(query.result).map(_.toList)
 
@@ -53,9 +45,8 @@ class UsersDao @Inject()(
         .on(_.country_id === _.country_id)
     } yield (u, c)
     db.run(
-      jQuery.result.headOption.map {
-        data: Option[(User, Country)] =>
-          Option(data.get._1.copy(country = Option(data.get._2)))
+      jQuery.result.headOption.map { data: Option[(User, Country)] =>
+        Option(data.get._1.copy(country = Option(data.get._2)))
       }
     )
   }
