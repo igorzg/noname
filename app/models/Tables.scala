@@ -30,9 +30,9 @@ trait Tables {
 
     def name = column[String]("name")
 
-    def iso3 = column[String]("iso3")
+    def iso3 = column[Option[String]]("iso3")
 
-    def num_code = column[Short]("num_code")
+    def num_code = column[Option[Short]]("num_code")
 
     def phone_code = column[Short]("phone_code")
 

@@ -21,18 +21,19 @@ object JsonHelper extends JsonMethods {
   override def mapper: ObjectMapper =
     super.mapper.registerModule(new DefaultScalaModule)
 
-  def writeString[T](body: T): Option[String] = {
+  @throws(classOf[Exception])
+  def writeJson[T](body: T): String = {
     try {
-      Option(mapper.writeValueAsString(body))
+      mapper.writeValueAsString(body)
     } catch {
       case e: Exception =>
         Logger.error("JacksonJsonSerialization", e)
-        None
+        throw e;
     }
   }
 
   def parseOpt[T](body: String)(
-      implicit typeReference: TypeReference[T]): Option[T] = {
+    implicit typeReference: TypeReference[T]): Option[T] = {
     try {
       Option(mapper.readerFor(typeReference).readValue(body))
     } catch {
@@ -43,7 +44,7 @@ object JsonHelper extends JsonMethods {
   }
 
   def parseOptList[T](body: String)(
-      implicit typeReference: TypeReference[List[T]]): Option[List[T]] = {
+    implicit typeReference: TypeReference[List[T]]): Option[List[T]] = {
     var data: List[T] = List()
     try {
       data = mapper.readerFor(typeReference).readValue(body)
@@ -60,16 +61,16 @@ object JsonHelper extends JsonMethods {
     Serialization.write(a)(formats)
 
   def write[A <: AnyRef, W <: Writer](a: A, out: W)(
-      implicit formats: Formats): W = Serialization.write(a, out)(formats)
+    implicit formats: Formats): W = Serialization.write(a, out)(formats)
 
   def write[A <: AnyRef](a: A, out: OutputStream)(
-      implicit formats: Formats): Unit = Serialization.write(a, out)(formats)
+    implicit formats: Formats): Unit = Serialization.write(a, out)(formats)
 
   def writePretty[A <: AnyRef](a: A)(implicit formats: Formats): String =
     Serialization.writePretty(a)(formats)
 
   def writePretty[A <: AnyRef, W <: Writer](a: A, out: W)(
-      implicit formats: Formats): W = Serialization.writePretty(a, out)(formats)
+    implicit formats: Formats): W = Serialization.writePretty(a, out)(formats)
 
   def read[A](json: JsonInput)(implicit formats: Formats, mf: Manifest[A]): A =
     Serialization.read(json)(formats, mf)

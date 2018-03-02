@@ -10,10 +10,10 @@ import macros.models.Entity
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 case class Country(
-    country_id: Option[Int],
+    var country_id: Option[Int],
     iso: String,
     name: String,
-    iso3: String,
-    num_code: Short,
+    var iso3: Option[String],
+    var num_code: Option[Short],
     phone_code: Short
 )
