@@ -19,4 +19,4 @@ sbt run noname
 ```
 
 ### No name ui project
-[noname-ui github](https://github.com/igorzg/noname)
+[noname-ui github](https://github.com/igorzg/noname-ui)
