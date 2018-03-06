@@ -17,3 +17,6 @@ docker-compose up -d
 ```sh
 sbt run noname
 ```
+
+### No name ui project
+[noname-ui github](https://github.com/igorzg/noname)
